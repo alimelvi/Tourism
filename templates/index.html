@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Tourism Itinerary - Explore Your Journey{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar for Itinerary Selection and Controls -->
+        <div class="col-lg-3 col-md-4 bg-light p-3">
+            <div class="sticky-top" style="top: 20px;">
+                <h4 class="mb-3">
+                    <i class="fas fa-route text-primary me-2"></i>Available Itineraries
+                </h4>
+                
+                <!-- Itinerary Selection -->
+                <div class="mb-3">
+                    <select id="itinerarySelect" class="form-select">
+                        <option value="">Select an itinerary...</option>
+                        {% for itinerary, company in itineraries %}
+                        <option value="{{ itinerary.id }}" data-company="{{ company.name }}">
+                            {{ itinerary.name }} - {{ company.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Company Information -->
+                <div id="companyInfo" class="mb-3" style="display: none;">
+                    <div class="card border-info">
+                        <div class="card-body p-2">
+                            <h6 class="card-title mb-1">
+                                <i class="fas fa-building text-info me-1"></i>
+                                <span id="companyName"></span>
+                            </h6>
+                            <small class="text-muted" id="companyDetails"></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Itinerary Description -->
+                <div id="itineraryDescription" class="mb-3" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">About This Trip</h6>
+                            <p id="descriptionText" class="card-text small"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Map Controls -->
+                <div class="mb-3">
+                    <h6>Map View</h6>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="mapType" id="streetMap" value="street" checked>
+                        <label class="btn btn-outline-primary btn-sm" for="streetMap">Street</label>
+                        
+                        <input type="radio" class="btn-check" name="mapType" id="satelliteMap" value="satellite">
+                        <label class="btn btn-outline-primary btn-sm" for="satelliteMap">Satellite</label>
+                        
+                        <input type="radio" class="btn-check" name="mapType" id="topoMap" value="topo">
+                        <label class="btn btn-outline-primary btn-sm" for="topoMap">Terrain</label>
+                    </div>
+                </div>
+                
+                <!-- Route Type Controls -->
+                <div class="mb-3">
+                    <h6>Route Type</h6>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="routeType" id="drivingRoute" value="driving" checked>
+                        <label class="btn btn-outline-success btn-sm" for="drivingRoute">
+                            <i class="fas fa-car me-1"></i>Driving
+                        </label>
+                        
+                        <input type="radio" class="btn-check" name="routeType" id="walkingRoute" value="walking">
+                        <label class="btn btn-outline-success btn-sm" for="walkingRoute">
+                            <i class="fas fa-walking me-1"></i>Walking
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Day Progress -->
+                <div id="dayProgress" class="mb-3" style="display: none;">
+                    <h6>Trip Progress</h6>
+                    <div id="daysList" class="d-flex flex-wrap gap-2">
+                        <!-- Days will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Legend -->
+                <div class="mb-3">
+                    <h6>Legend</h6>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-marker active me-2"></div>
+                            <small>Active Stop (clickable)</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="legend-marker inactive me-2"></div>
+                            <small>Inactive Stop</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="legend-line me-2" style="background-color: #007bff;"></div>
+                            <small>Road Routes</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="legend-line me-2" style="background-color: #dc3545; border-style: dashed;"></div>
+                            <small>Direct Path (fallback)</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Location Button -->
+                <button id="locateBtn" class="btn btn-success w-100 mb-2">
+                    <i class="fas fa-location-arrow me-2"></i>Find My Location
+                </button>
+                
+                <!-- Reset View Button -->
+                <button id="resetViewBtn" class="btn btn-secondary w-100">
+                    <i class="fas fa-refresh me-2"></i>Reset View
+                </button>
+            </div>
+        </div>
+        
+        <!-- Map Container -->
+        <div class="col-lg-9 col-md-8 p-0">
+            <div id="map" style="height: 90vh;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Stop Details Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stopModalTitle">Stop Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img id="stopImage" src="" alt="Stop Image" class="img-fluid rounded" style="display: none;">
+                        <div id="noImagePlaceholder" class="text-center p-4 bg-light rounded" style="display: none;">
+                            <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                            <p class="text-muted">No image available</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <span class="badge bg-primary" id="stopDayBadge">Day 1</span>
+                        </div>
+                        <p id="stopDescription" class="mb-3"></p>
+                        <div class="d-flex gap-2">
+                            <button id="speakBtn" class="btn btn-info">
+                                <i class="fas fa-volume-up me-2"></i>Listen
+                            </button>
+                            <button id="stopSpeakBtn" class="btn btn-warning" style="display: none;">
+                                <i class="fas fa-stop me-2"></i>Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50" style="z-index: 9999; display: none !important;">
+    <div class="text-center text-white">
+        <div class="spinner-border mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading itinerary...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}

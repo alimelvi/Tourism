@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Stop - {{ itinerary.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-map-pin me-2"></i>Add New Stop
+                    </h4>
+                    <small>Adding to: {{ itinerary.name }}</small>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label required">
+                                        <i class="fas fa-tag me-1"></i>Stop Name
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="name" 
+                                           name="name" 
+                                           required 
+                                           placeholder="e.g., Eiffel Tower"
+                                           maxlength="100">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="day_number" class="form-label required">
+                                        <i class="fas fa-calendar-day me-1"></i>Day Number
+                                    </label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="day_number" 
+                                           name="day_number" 
+                                           required 
+                                           min="1" 
+                                           max="365"
+                                           value="{{ request.args.get('day', '1') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="order_in_day" class="form-label">
+                                        <i class="fas fa-sort-numeric-up me-1"></i>Stop Order
+                                    </label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="order_in_day" 
+                                           name="order_in_day" 
+                                           min="1" 
+                                           value="1">
+                                    <div class="form-text">Order within the day</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Description
+                            </label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="4" 
+                                      placeholder="Describe this stop, its significance, what visitors can do here..."></textarea>
+                            <div class="form-text">This description will be read aloud when using the speech feature.</div>
+                        </div>
+
+                        <!-- Location Section -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Location Details
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="latitude" class="form-label required">
+                                                <i class="fas fa-globe me-1"></i>Latitude
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   id="latitude" 
+                                                   name="latitude" 
+                                                   required 
+                                                   step="any" 
+                                                   placeholder="e.g., 48.8584"
+                                                   min="-90" 
+                                                   max="90">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="longitude" class="form-label required">
+                                                <i class="fas fa-globe me-1"></i>Longitude
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   id="longitude" 
+                                                   name="longitude" 
+                                                   required 
+                                                   step="any" 
+                                                   placeholder="e.g., 2.2945"
+                                                   min="-180" 
+                                                   max="180">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    <strong>Tip:</strong> You can find coordinates by searching for the location on Google Maps, 
+                                    right-clicking on the exact spot, and copying the coordinates that appear.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-image me-2"></i>Stop Image
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">
+                                        <i class="fas fa-upload me-1"></i>Upload Image
+                                    </label>
+                                    <input type="file" 
+                                           class="form-control" 
+                                           id="image" 
+                                           name="image" 
+                                           accept="image/*">
+                                    <div class="form-text">
+                                        Supported formats: JPG, PNG, GIF. Maximum file size: 10MB.
+                                        High-quality images work best for the user experience.
+                                    </div>
+                                </div>
+                                
+                                <!-- Image Preview -->
+                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                    <img id="previewImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ url_for('manage_itinerary', itinerary_id=itinerary.id) }}" 
+                               class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Add Stop
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Tips for Adding Stops
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Content Tips:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Use clear, descriptive names
+                                </li>
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Write engaging descriptions
+                                </li>
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Include historical or cultural context
+                                </li>
+                                <li>
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Mention practical details (hours, fees)
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Technical Tips:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Use exact coordinates for accuracy
+                                </li>
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Upload high-quality images
+                                </li>
+                                <li class="mb-1">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Order stops logically within each day
+                                </li>
+                                <li>
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Consider travel time between stops
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.required::after {
+    content: " *";
+    color: red;
+}
+</style>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image preview functionality
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        
+        if (file) {
+            // Check file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                window.TourismApp.showAlert('File size too large. Please choose an image under 10MB.', 'warning');
+                this.value = '';
+                imagePreview.style.display = 'none';
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                window.TourismApp.showAlert('Please select a valid image file.', 'warning');
+                this.value = '';
+                imagePreview.style.display = 'none';
+                return;
+            }
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    });
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const latitude = parseFloat(document.getElementById('latitude').value);
+        const longitude = parseFloat(document.getElementById('longitude').value);
+        
+        // Validate coordinates
+        if (isNaN(latitude) || latitude < -90 || latitude > 90) {
+            event.preventDefault();
+            window.TourismApp.showAlert('Please enter a valid latitude between -90 and 90.', 'danger');
+            return;
+        }
+        
+        if (isNaN(longitude) || longitude < -180 || longitude > 180) {
+            event.preventDefault();
+            window.TourismApp.showAlert('Please enter a valid longitude between -180 and 180.', 'danger');
+            return;
+        }
+        
+        // Show loading
+        window.TourismApp.showLoading();
+    });
+});
+</script>
+{% endblock %}

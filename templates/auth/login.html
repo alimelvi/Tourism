@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Tourism Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card mt-5">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Your Account
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email Address
+                            </label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   required 
+                                   placeholder="your@company.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-1"></i>Password
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   required 
+                                   placeholder="Enter your password">
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="mb-0">Don't have an account? 
+                                <a href="{{ url_for('register') }}" class="text-decoration-none">
+                                    Register your company
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Demo Accounts -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Demo Accounts
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <small class="text-muted">
+                        <strong>Super Admin:</strong> admin@tourism.com / admin123<br>
+                        <strong>Company Demo:</strong> demo@company.com / demo123
+                    </small>
+                </div>
+            </div>
+
+            <!-- Return to Public Site -->
+            <div class="text-center mt-3">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Public Site
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

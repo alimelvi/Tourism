@@ -1,0 +1,312 @@
+/* Custom CSS for Tourism Itinerary App */
+
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Map Styles */
+#map {
+    border-radius: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Map Markers */
+.custom-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.custom-marker:hover {
+    transform: scale(1.1);
+}
+
+.custom-marker.active {
+    background-color: #28a745;
+    animation: pulse 2s infinite;
+}
+
+.custom-marker.inactive {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+/* Legend Styles */
+.legend-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.legend-marker.active {
+    background-color: #28a745;
+}
+
+.legend-marker.inactive {
+    background-color: #6c757d;
+}
+
+.legend-line {
+    width: 20px;
+    height: 3px;
+    background-color: #007bff;
+    border-radius: 2px;
+}
+
+/* Day Progress Badges */
+.day-badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.day-badge.active {
+    background-color: #28a745;
+    color: white;
+    border-color: #1e7e34;
+}
+
+.day-badge.inactive {
+    background-color: #e9ecef;
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.day-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+#stopImage {
+    max-height: 300px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Sidebar Enhancements */
+.col-lg-3.bg-light {
+    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-right: 1px solid #dee2e6;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+}
+
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .col-lg-3 {
+        order: 2;
+        padding: 15px;
+    }
+    
+    .col-lg-9 {
+        order: 1;
+    }
+    
+    #map {
+        height: 50vh !important;
+    }
+    
+    .sticky-top {
+        position: relative !important;
+    }
+}
+
+/* Loading Animation */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    pointer-events: auto;
+}
+
+.loading-overlay[style*="display: none"] {
+    pointer-events: none;
+}
+
+/* Speech Button Animation */
+#speakBtn.speaking {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    animation: speaking-pulse 1s infinite;
+}
+
+@keyframes speaking-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Admin Styles */
+.admin-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.status-badge {
+    font-size: 0.75em;
+    padding: 4px 8px;
+}
+
+/* Table Styles */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+/* Form Enhancements */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Success/Error States */
+.alert {
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Route Information Popup */
+.route-info {
+    text-align: center;
+    min-width: 150px;
+}
+
+.route-info strong {
+    color: #495057;
+    font-size: 0.9em;
+}
+
+.route-info i {
+    color: #6c757d;
+}
+
+/* Route Segments */
+.leaflet-popup-content {
+    margin: 8px 12px;
+    line-height: 1.4;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

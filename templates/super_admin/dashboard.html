@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Super Admin Dashboard - Tourism Platform{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>
+                        <i class="fas fa-crown text-warning me-2"></i>
+                        Super Admin Dashboard
+                    </h2>
+                    <p class="text-muted mb-0">Platform-wide management and analytics</p>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-2"></i>Super Admin
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="mb-0">{{ companies|length }}</h3>
+                            <p class="mb-0">Companies</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-building fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="mb-0">{{ users|length }}</h3>
+                            <p class="mb-0">Total Users</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="mb-0">{{ total_itineraries }}</h3>
+                            <p class="mb-0">Itineraries</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-map fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="mb-0">{{ total_stops }}</h3>
+                            <p class="mb-0">Total Stops</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-map-pin fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ url_for('manage_companies') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-building me-2"></i>Manage Companies
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button class="btn btn-outline-success w-100" onclick="exportData()">
+                                <i class="fas fa-download me-2"></i>Export Data
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button class="btn btn-outline-info w-100" onclick="systemHealth()">
+                                <i class="fas fa-heartbeat me-2"></i>System Health
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button class="btn btn-outline-warning w-100" onclick="generateReport()">
+                                <i class="fas fa-chart-bar me-2"></i>Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Companies -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-building me-2"></i>Recent Companies
+                    </h5>
+                    <a href="{{ url_for('manage_companies') }}" class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if companies %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Plan</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for company in companies[:5] %}
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>{{ company.name }}</strong><br>
+                                            <small class="text-muted">{{ company.email }}</small>
+                                        </div>
+                                    </td>
+                                    <td>{{ company.city or 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'primary' if company.subscription_plan == 'basic' else 'warning' if company.subscription_plan == 'premium' else 'success' }}">
+                                            {{ company.subscription_plan.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if company.is_active else 'secondary' }}">
+                                            {{ 'Active' if company.is_active else 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>{{ company.created_at.strftime('%Y-%m-%d') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="#" class="btn btn-outline-info btn-sm" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <form method="POST" action="{{ url_for('toggle_company_status', company_id=company.id) }}" style="display: inline;">
+                                                <button type="submit" 
+                                                        class="btn btn-outline-{{ 'warning' if company.is_active else 'success' }} btn-sm"
+                                                        title="{{ 'Deactivate' if company.is_active else 'Activate' }}">
+                                                    <i class="fas fa-{{ 'pause' if company.is_active else 'play' }}"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Companies Yet</h5>
+                        <p class="text-muted">Companies will appear here as they register.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Platform Stats
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Active Companies</span>
+                            <strong class="text-success">{{ companies|selectattr('is_active')|list|length }}</strong>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" 
+                                 style="width: {{ (companies|selectattr('is_active')|list|length / (companies|length if companies else 1)) * 100 }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Companies with Itineraries</span>
+                            {% set companies_with_content = companies|selectattr('itineraries')|list|length %}
+                            <strong class="text-info">{{ companies_with_content }}</strong>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" 
+                                 style="width: {{ (companies_with_content / (companies|length if companies else 1)) * 100 }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Total Admin Users</span>
+                            <strong class="text-primary">{{ users|selectattr('role', 'equalto', 'admin')|list|length }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Avg Stops per Itinerary</span>
+                            <strong class="text-warning">
+                                {% if total_itineraries > 0 %}
+                                    {{ "%.1f"|format(total_stops / total_itineraries) }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-server me-2"></i>System Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Database</span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-check me-1"></i>Online
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>File Storage</span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-check me-1"></i>Online
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Routing API</span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-check me-1"></i>Online
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportData() {
+    alert('Export functionality would be implemented here');
+}
+
+function systemHealth() {
+    alert('System health check would be implemented here');
+}
+
+function generateReport() {
+    alert('Report generation would be implemented here');
+}
+</script>
+{% endblock %}

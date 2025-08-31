@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Itinerary - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus me-2"></i>Create New Itinerary
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label required">
+                                <i class="fas fa-tag me-1"></i>Itinerary Name
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="name" 
+                                   name="name" 
+                                   required 
+                                   placeholder="e.g., Amazing Europe Tour"
+                                   maxlength="100">
+                            <div class="form-text">Give your itinerary a catchy, descriptive name.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-info-circle me-1"></i>Description
+                            </label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="4" 
+                                      placeholder="Describe what makes this itinerary special..."></textarea>
+                            <div class="form-text">Optional: Add details about the trip, highlights, or special features.</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Next Steps:</strong> After creating your itinerary, you'll be able to add stops, upload images, and configure day settings.
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Itinerary
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Tips for Creating Great Itineraries
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Use descriptive names that travelers will easily understand
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Include key highlights or themes in the description
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Consider mentioning duration or difficulty level
+                        </li>
+                        <li>
+                            <i class="fas fa-check text-success me-2"></i>
+                            Think about your target audience when writing the description
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.required::after {
+    content: " *";
+    color: red;
+}
+</style>
+{% endblock %}
